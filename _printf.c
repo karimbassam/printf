@@ -10,25 +10,17 @@ int _printf(const char *format, ...)
 {
 	va_list args;
 	int count = 0;
-	const char *ptr;
 	char c;
 	char *str;
 
-	if (format == NULL)
-		return (-1);
-
 	va_start(args, format);
-
-	for (ptr = format; *ptr != '\0'; ptr++)
+	for (; *format != '\0'; format++)
 	{
-		if (*ptr != '%')
-		{
-			write(1, ptr, 1);
-			count++;
-		}
+		if (*format != '%')
+			count += write(1, format, 1);
 		else
 		{
-			switch (*(++ptr))
+			switch (*(++format))
 			{
 				case 'c':
 					c = (char)va_arg(args, int);
@@ -46,13 +38,9 @@ int _printf(const char *format, ...)
 				case 'n':
 					*va_arg(args, int *) = count;
 					break;
-				default:
-					count += write(1, "%", 1);
-					count += write(1, ptr, 1);
 			}
 		}
 	}
-
 	va_end(args);
 	return (count);
 }
