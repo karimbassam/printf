@@ -26,7 +26,8 @@ int _printf(const char *format, ...)
 			{
 			case 's':
 				str = va_arg(args, char *);
-				n += write(1, str, strlen(str));
+				if (str != NULL)
+					n += write(1, str, strlen(str));
 				break;
 			case 'c':
 				c = (char)va_arg(args, int);
