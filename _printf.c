@@ -1,49 +1,57 @@
 #include "main.h"
 
 /**
- * _printf - custom print function
- * @format: format string
+ * _printf - Custom printf function
+ * @format: Format string with conversion specifiers
  *
- * Return: Number of printed characters without NULL
+ * Return: Number of characters printed (excluding the null byte)
  */
-
 int _printf(const char *format, ...)
 {
 	va_list args;
 	int count = 0;
+	const char *ptr;
 	char c;
 	char *str;
 
+	if (format == NULL)
+		return (-1);
+
 	va_start(args, format);
 
-	for (; *format; format++)
+	for (ptr = format; *ptr != '\0'; ptr++)
 	{
-		if (*format != '%')
+		if (*ptr != '%')
 		{
-			count += write(1, format, 1);
+			write(1, ptr, 1);
+			count++;
 		}
 		else
 		{
-			switch (*(++format))
+			switch (*(++ptr))
 			{
 				case 'c':
-					c = (char)(va_arg(args, int));
+					c = (char)va_arg(args, int);
 					count += write(1, &c, 1);
 					break;
 				case 's':
 					str = va_arg(args, char *);
+					if (str == NULL)
+						str = "(null)";
 					count += write(1, str, strlen(str));
 					break;
 				case '%':
 					count += write(1, "%", 1);
 					break;
 				case 'n':
-					*va_arg(args, int*) = count;
+					*va_arg(args, int *) = count;
 					break;
+				default:
+					count += write(1, "%", 1);
+					count += write(1, ptr, 1);
 			}
 		}
 	}
-
 
 	va_end(args);
 	return (count);
