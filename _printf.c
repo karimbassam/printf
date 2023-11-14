@@ -11,16 +11,17 @@ int _printf(const char *format, ...)
 	va_list args;
 	int count = 0;
 	char c;
+	const char *ptr;
 	char *str;
 
 	va_start(args, format);
-	for (; *format != '\0'; format++)
+	for (ptr = format; *ptr != '\0'; ptr++)
 	{
-		if (*format != '%')
-			count += write(1, format, 1);
+		if (*ptr != '%')
+			count += write(1, ptr, 1);
 		else
 		{
-			switch (*(++format))
+			switch (*(++ptr))
 			{
 				case 'c':
 					c = (char)va_arg(args, int);
