@@ -1,49 +1,39 @@
 #include "main.h"
 
 /**
- * _itoa - Convert integer to ASCII string
- * @num: Integer to convert
- * @buffer: Buffer to store the result
- *
- * Return: Length of the string
+ * print_char - print character
+ * @c: charater to be printed
+ * Return: num of printed bytes
  */
-int _itoa(int num, char *buffer)
+int print_char(int c)
 {
-	int i = 0;
+	char ch;
 
-	if (num < 0)
+	ch = c;
+	return (write(1, &ch, 1));
+}
+/**
+ * print_digit - print number
+ * @n: number to be printed
+ * Return: num of printed bytes
+ */
+
+int print_digit(int n)
+{
+	int count;
+	char *symbol;
+
+	symbol = "0123456789";
+	if (n < 0)
 	{
-		buffer[i++] = '-';
-		num = -num;
+		write(1, "-", 1);
+		return (print_digit(-n) + 1);
 	}
+	else if (n < 10)
+		return (print_char(symbol[n]));
 
-	if (num == 0)
-		buffer[i++] = '0';
-
-	while (num != 0)
-	{
-		int digit = num % 10;
-
-		buffer[i++] = digit + '0';
-		num /= 10;
-	}
-
-	buffer[i] = '\0';
-
-	int start = 0;
-	int end = i - 1;
-
-	while (start < end)
-	{
-		char temp = buffer[start];
-
-		buffer[start] = buffer[end];
-		buffer[end] = temp;
-		start++;
-		end--;
-	}
-
-	return (i);
+	count = print_digit(n / 10);
+	return (count + print_digit(n % 10));
 }
 
 /**
@@ -55,10 +45,10 @@ int _itoa(int num, char *buffer)
 int _printf(const char *format, ...)
 {
 	va_list args;
-	int count = 0, num, len;
+	int count = 0, num;
 	char c;
 	const char *ptr;
-	char *str, num_str[12];
+	char *str;
 
 	va_start(args, format);
 	for (ptr = format; *ptr; ptr++)
@@ -72,8 +62,7 @@ int _printf(const char *format, ...)
 			case 'i':
 			case 'd':
 				num = va_arg(args, int);
-				len = _itoa(num, num_str);
-				count += write(1, num_str, len);
+				count += print_digit(num);
 				break;
 			case 'c':
 				c = (char)va_arg(args, int);
