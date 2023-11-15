@@ -9,10 +9,10 @@
 int _printf(const char *format, ...)
 {
 	va_list args;
-	int count = 0;
+	int count = 0, num;
 	char c;
 	const char *ptr;
-	char *str;
+	char *str, num_str[12];
 
 	va_start(args, format);
 	for (ptr = format; *ptr != '\0'; ptr++)
@@ -23,6 +23,12 @@ int _printf(const char *format, ...)
 		{
 			switch (*(++ptr))
 			{
+			case 'i':
+			case 'd':
+				 num = va_arg(args, int);
+				 sprintf(num_str, "%d", num);
+				 count += write(1, num_str, strlen(num_str));
+				 break;
 			case 'c':
 				c = (char)va_arg(args, int);
 				count += write(1, &c, 1);
